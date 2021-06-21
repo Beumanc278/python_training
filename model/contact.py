@@ -6,4 +6,3 @@ class Contact:
         self.address = address
         self.phone = phone
         self.email = email
-        self.group = '[none]'
