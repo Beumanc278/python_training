@@ -18,8 +18,4 @@ class ContactHelper:
         wd.find_element_by_name('email').send_keys(contact.email)
         # submit contact creation
         wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
-        self.return_to_home_page()
-
-    def return_to_home_page(self):
-        wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
+        self.app.open_home_page()
