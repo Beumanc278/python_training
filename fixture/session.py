@@ -1,3 +1,8 @@
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+
+
 class SessionHelper:
 
     def __init__(self, app):
@@ -17,4 +22,6 @@ class SessionHelper:
     def logout(self):
         wd = self.app.wd
         wd.find_element_by_link_text("Logout").click()
+        loginform_element = WebDriverWait(wd, 5).until(EC.visibility_of_element_located((By.NAME, "user")))
+
 
