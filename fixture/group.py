@@ -5,7 +5,8 @@ class GroupHelper:
 
     def open_group_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("groups").click()
+        if not (wd.current_url.endswith("/group.php") and wd.find_element_by_name("new")):
+            wd.find_element_by_link_text("groups").click()
 
     def create(self, group):
         wd = self.app.wd
@@ -20,7 +21,10 @@ class GroupHelper:
 
     def return_to_groups_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text("group page").click()
+        if (wd.current_url.endswith("/group.php") and wd.find_element_by_link_text("group page")):
+            wd.find_element_by_link_text("group page").click()
+        else:
+            wd.find_element_by_link_text("groups").click()
 
     def modify_first_group(self, group):
         wd = self.app.wd
