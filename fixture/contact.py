@@ -36,8 +36,13 @@ class ContactHelper:
         self.change_field("firstname", contact.first_name)
         self.change_field("lastname", contact.last_name)
         self.change_field("address", contact.address)
+        self.change_field("home", contact.homephone)
         self.change_field("mobile", contact.mobilephone)
+        self.change_field("work", contact.workphone)
+        self.change_field("phone2", contact.secondaryphone)
         self.change_field("email", contact.email1)
+        self.change_field("email2", contact.email2)
+        self.change_field("email3", contact.email3)
 
     def change_field(self, field_name, text):
         wd = self.app.wd
@@ -138,7 +143,9 @@ class ContactHelper:
 
     @staticmethod
     def clear_phonenumber(s):
-        return re.sub("[() -]", '', s)
+        phonenumber = s.replace('00', '0')
+        return re.sub("[() -]", '', phonenumber)
+
 
     @staticmethod
     def extract_email(s):
