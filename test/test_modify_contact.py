@@ -9,8 +9,8 @@ def test_modify_some_contact(app):
         app.contact.create(Contact(first_name='newFirstname',
                                    last_name='newLastname',
                                    address='newAddress',
-                                   phone='new9994443322',
-                                   email='newtestemail@testdomain.com'))
+                                   homephone='new9994443322',
+                                   email1='newtestemail@testdomain.com'))
     old_contacts = app.contact.get_contact_list()
     contact = Contact(first_name='modifiedFirstname',
                       last_name='modifiedLastname')
