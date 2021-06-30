@@ -1,17 +1,7 @@
 # -*- coding: utf-8 -*-
-from model.contact import Contact
-import pytest
 
-
-testdata = [Contact(first_name=Contact.generate_random_name(10), last_name=Contact.generate_random_name(10),
-                    address=Contact.generate_random_address(15), email1=Contact.generate_random_email(10),
-                    email2=Contact.generate_random_email(10), email3=Contact.generate_random_email(10),
-                    homephone=Contact.generate_random_phone(), workphone=Contact.generate_random_phone(), mobilephone=Contact.generate_random_phone(),
-                    secondaryphone=Contact.generate_random_phone())]
-
-
-@pytest.mark.parametrize('contact', testdata, ids=[repr(x) for x in testdata])
-def test_add_contact(app, contact):
+def test_add_contact(app, data_contacts):
+    contact = data_contacts
     old_contacts = app.contact.get_contact_list()
     app.contact.create(contact)
     assert len(old_contacts) + 1 == app.contact.count()
