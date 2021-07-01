@@ -74,8 +74,7 @@ class ContactHelper:
             for row in table_rows:
                 columns = row.find_elements_by_tag_name("td")
                 all_phones = columns[5].text.splitlines() if columns[5].text else []
-                email_hrefs = columns[4].find_elements_by_tag_name('a')
-                all_emails = list(map(lambda x: self.extract_email(x.get_attribute('innerHTML')), email_hrefs)) if email_hrefs else []
+                all_emails = columns[4].text
                 self.contact_cache.append(Contact(first_name=columns[2].text,
                                                   last_name=columns[1].text,
                                                   address=columns[3].text,
@@ -136,20 +135,12 @@ class ContactHelper:
                                                           contact.secondaryphone]))))
 
     def merge_emails_like_on_home_page(self, contact):
-        return list(filter(lambda x: x != '', map(lambda x: self.app.contact.clear_phonenumber(x),
-                                                  filter(lambda x: x is not None,
-                                                         [contact.email1, contact.email2,
-                                                          contact.email3]))))
+        return '\n'.join(filter(lambda x: x != '', filter(lambda x: x is not None,
+                                                          [contact.email1,
+                                                           contact.email2,
+                                                           contact.email3])))
 
     @staticmethod
     def clear_phonenumber(s):
         phonenumber = s.replace('00', '0')
         return re.sub("[() -]", '', phonenumber)
-
-
-    @staticmethod
-    def extract_email(s):
-        if re.search(r'\w+@\w+.\w+', s):
-            return re.search(r'\w+@\w+.\w+', s).group()
-        else:
-            return ''
