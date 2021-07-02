@@ -32,6 +32,15 @@ class ContactHelper:
         self.app.open_home_page()
         self.contact_cache = None
 
+    def modify_contact_by_id(self, contact_id, contact):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_element_by_xpath(f'//a[@href="edit.php?id={contact_id}"]').click()
+        self.fill_contact_form(contact)
+        wd.find_element_by_name("update").click()
+        self.app.open_home_page()
+        self.contact_cache = None
+
     def fill_contact_form(self, contact):
         self.change_field("firstname", contact.first_name)
         self.change_field("lastname", contact.last_name)
@@ -55,6 +64,15 @@ class ContactHelper:
         wd = self.app.wd
         self.app.open_home_page()
         wd.find_elements_by_name("selected[]")[index].click()
+        wd.find_element_by_xpath('//input[@type="button" and @value="Delete"]').click()
+        wd.switch_to_alert().accept()
+        self.app.open_home_page()
+        self.contact_cache = None
+
+    def delete_contact_by_id(self, contact_id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_element_by_css_selector(f"input[value='{contact_id}']").click()
         wd.find_element_by_xpath('//input[@type="button" and @value="Delete"]').click()
         wd.switch_to_alert().accept()
         self.app.open_home_page()
@@ -91,6 +109,11 @@ class ContactHelper:
         cell = row.find_elements_by_tag_name('td')[7]
         cell.find_element_by_tag_name('a').click()
 
+    def open_contact_to_edit_by_id(self, id):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_element_by_xpath(f'//a[@href="edit.php?id={id}"]').click()
+
     def open_contact_view_by_index(self, index):
         wd = self.app.wd
         self.app.open_home_page()
@@ -98,9 +121,28 @@ class ContactHelper:
         cell = row.find_elements_by_tag_name('td')[6]
         cell.find_element_by_tag_name('a').click()
 
-    def get_contact_info_from_edit_page(self, index):
+    def get_contact_info_from_edit_page_by_index(self, index):
         wd = self.app.wd
         self.open_contact_to_edit_by_index(index)
+        firstname = wd.find_element_by_name('firstname').get_attribute('value')
+        lastname = wd.find_element_by_name('lastname').get_attribute('value')
+        id = wd.find_element_by_name('id').get_attribute('value')
+        homephone = wd.find_element_by_name('home').get_attribute('value')
+        workphone = wd.find_element_by_name('work').get_attribute('value')
+        mobilephone = wd.find_element_by_name('mobile').get_attribute('value')
+        secondaryphone = wd.find_element_by_name('phone2').get_attribute('value')
+        address = wd.find_element_by_name('address').get_attribute('value')
+        email1 = wd.find_element_by_name('email').get_attribute('value')
+        email2 = wd.find_element_by_name('email2').get_attribute('value')
+        email3 = wd.find_element_by_name('email3').get_attribute('value')
+        return Contact(first_name=firstname, last_name=lastname, id=id,
+                       homephone=homephone, workphone=workphone, mobilephone=mobilephone, secondaryphone=secondaryphone,
+                       email1=email1, email2=email2, email3=email3,
+                       address=address)
+
+    def get_contact_info_from_edit_page_by_id(self, contact_id):
+        wd = self.app.wd
+        self.open_contact_to_edit_by_id(contact_id)
         firstname = wd.find_element_by_name('firstname').get_attribute('value')
         lastname = wd.find_element_by_name('lastname').get_attribute('value')
         id = wd.find_element_by_name('id').get_attribute('value')

@@ -5,11 +5,11 @@ from sys import maxsize
 
 class Group:
 
-    def __init__(self, name=None, header=None, footer=None, id=None):
+    def __init__(self, id=None, name=None, header=None, footer=None):
+        self.id = id
         self.name = name
         self.header = header
         self.footer = footer
-        self.id = id
 
     def __repr__(self):
         return "%s:%s:%s:%s" % (self.id, self.name, self.header, self.footer)
@@ -17,8 +17,8 @@ class Group:
     def __eq__(self, other):
         return (self.id is None or other.id is None or self.id == other.id) and self.name == other.name
 
-    def id_or_max(self, gr):
-        return int(gr.id) if gr.id else maxsize
+    def id_or_max(self):
+        return int(self.id) if self.id else maxsize
 
     @staticmethod
     def generate_random_group_field(prefix, maxlen):

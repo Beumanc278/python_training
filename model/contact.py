@@ -32,8 +32,8 @@ class Contact:
                 self.first_name == other.first_name and \
                 self.last_name == other.last_name
 
-    def id_or_max(self, gr):
-        return int(gr.id) if gr.id else maxsize
+    def id_or_max(self):
+        return int(self.id) if self.id else maxsize
 
     @staticmethod
     def generate_random_name(maxlen):
