@@ -1,6 +1,9 @@
 from model.contact import Contact
 import re
 
+from model.group import Group
+
+
 class ContactHelper:
 
     contact_cache = None
@@ -102,6 +105,24 @@ class ContactHelper:
             return self.contact_cache
         return list(self.contact_cache)
 
+    def get_contact_list_from_group(self, group):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_group_list_by_id(group.id)
+        contact_list = []
+        table_rows = wd.find_elements_by_name("entry")
+        for row in table_rows:
+            columns = row.find_elements_by_tag_name("td")
+            all_phones = columns[5].text.splitlines() if columns[5].text else []
+            all_emails = columns[4].text
+            contact_list.append(Contact(first_name=columns[2].text,
+                                              last_name=columns[1].text,
+                                              address=columns[3].text,
+                                              id=row.find_element_by_name("selected[]").get_attribute('value'),
+                                              all_phones_from_home_page=all_phones,
+                                              all_emails_from_home_page=all_emails))
+        return contact_list
+
     def open_contact_to_edit_by_index(self, index):
         wd = self.app.wd
         self.app.open_home_page()
@@ -169,6 +190,10 @@ class ContactHelper:
         secondaryphone = re.search("P: (.*)", text).group(1) if re.search('P: (.*)', text) else ''
         return Contact(homephone=homephone, workphone=workphone, mobilephone=mobilephone, secondaryphone=secondaryphone)
 
+    def select_group_list_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector(f"select[name='group'] option[value='{id}']").click()
+
     def merge_phones_like_on_home_page(self, contact):
         return list(filter(lambda x: x != '', map(lambda x: self.app.contact.clear_phonenumber(x),
                                                   filter(lambda x: x is not None,
@@ -186,3 +211,24 @@ class ContactHelper:
     def clear_phonenumber(s):
         phonenumber = s.replace('00', '0')
         return re.sub("[() -]", '', phonenumber)
+
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector(f"input[value='{id}']").click()
+
+    def add_contact_to_group(self, contact, group):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_group_list_by_id('[none]')
+        self.select_contact_by_id(contact.id)
+        wd.find_element_by_css_selector(f"select[name='to_group'] option[value='{group.id}']").click()
+        wd.find_element_by_css_selector(f"input[name='add'][type='submit']").click()
+        self.app.open_home_page()
+
+    def delete_contact_from_group(self, contact, group):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_group_list_by_id(group.id)
+        self.select_contact_by_id(contact.id)
+        wd.find_element_by_css_selector(f"input[name='remove'][type='submit']").click()
+        self.app.open_home_page()
