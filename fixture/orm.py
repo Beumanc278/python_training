@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from pony.orm import *
@@ -24,6 +25,14 @@ class ORMFixture:
         id = PrimaryKey(int, column='id')
         firstname = Optional(str, column='firstname')
         lastname = Optional(str, column='lastname')
+        address = Optional(str, column='address')
+        homephone = Optional(str, column='home')
+        mobilephone = Optional(str, column='mobile')
+        workphone = Optional(str, column='work')
+        secondaryphone = Optional(str, column='phone2')
+        email1 = Optional(str, column='email')
+        email2 = Optional(str, column='email2')
+        email3 = Optional(str, column='email3')
         deprecated = Optional(str, column='deprecated')
         groups = Set(lambda: ORMFixture.ORMGroup, table='address_in_groups',
                      column='group_id', reverse='contacts', lazy=True)
@@ -41,8 +50,24 @@ class ORMFixture:
 
     def convert_contacts_to_model(self, contacts):
         def convert(contact):
-            return Contact(id=str(contact.id), first_name=contact.firstname, last_name=contact.lastname)
+            return Contact(id=str(contact.id), first_name=contact.firstname, last_name=contact.lastname,
+                           address=contact.address, email1=contact.email1, email2=contact.email2, email3=contact.email3,
+                           homephone=contact.homephone, mobilephone=contact.mobilephone, workphone=contact.workphone, secondaryphone=contact.secondaryphone)
         return list(map(convert, contacts))
+
+    def get_contact_list_like_on_home_page(self):
+        input_list = self.get_contact_list()
+        output_list = []
+        for contact in input_list:
+            all_phones_from_home_page = list(filter(lambda x: x is not None, map(lambda x: self.empty_row_to_none(x),
+                                                                                 map(lambda x: self.clear_phonenumber(x), [contact.homephone, contact.mobilephone, contact.workphone, contact.secondaryphone]))))
+            all_emails_from_home_page = '\n'.join(list(filter(lambda x: x is not None, map(lambda x: self.empty_row_to_none(x), [contact.email1, contact.email2, contact.email3]))))
+            (contact.homephone, contact.mobilephone, contact.workphone, contact.secondaryphone) = (None, None, None, None)
+            (contact.email1, contact.email2, contact.email3) = (None, None, None)
+            contact.all_emails_from_home_page = all_emails_from_home_page
+            contact.all_phones_from_home_page = all_phones_from_home_page
+            output_list.append(contact)
+        return output_list
 
     @db_session
     def get_group_list(self):
@@ -62,3 +87,10 @@ class ORMFixture:
         orm_group = list(select(g for g in ORMFixture.ORMGroup if g.id == group.id))[0]
         return self.convert_contacts_to_model(
             select(c for c in ORMFixture.ORMContact if c.deprecated is None and orm_group not in c.groups))
+
+    def empty_row_to_none(self, s):
+        return None if not s else s
+
+    @staticmethod
+    def clear_phonenumber(s):
+        return re.sub("[() -]", '', s)

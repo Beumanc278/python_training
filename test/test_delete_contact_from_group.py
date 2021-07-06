@@ -1,11 +1,7 @@
 import random
-from fixture.orm import ORMFixture
 from model.contact import Contact
 
-db = ORMFixture(host='127.0.0.1', name='addressbook',
-                user='root', password="")
-
-def test_delete_contact_from_group(app, check_ui):
+def test_delete_contact_from_group(app, db, check_ui):
     groups = app.group.get_group_list()
     contacts_from_group = []
     while not contacts_from_group:

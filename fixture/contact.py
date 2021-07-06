@@ -105,10 +105,10 @@ class ContactHelper:
             return self.contact_cache
         return list(self.contact_cache)
 
-    def get_contact_list_from_group(self, group):
+    def get_contact_list_from_group(self, group=None):
         wd = self.app.wd
         self.app.open_home_page()
-        self.select_group_list_by_id(group.id)
+        self.select_group_list_by_id(group.id) if group else self.select_group_list_by_id('[none]')
         contact_list = []
         table_rows = wd.find_elements_by_name("entry")
         for row in table_rows:
@@ -209,8 +209,7 @@ class ContactHelper:
 
     @staticmethod
     def clear_phonenumber(s):
-        phonenumber = s.replace('00', '0')
-        return re.sub("[() -]", '', phonenumber)
+        return re.sub("[() -]", '', s)
 
     def select_contact_by_id(self, id):
         wd = self.app.wd

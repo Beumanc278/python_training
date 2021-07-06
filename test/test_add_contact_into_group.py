@@ -1,18 +1,14 @@
 import random
-from fixture.orm import ORMFixture
 from data.contacts import testdata as contact_testdata
 from data.groups import testdata as group_testdata
 from model.contact import Contact
 
-db = ORMFixture(host='127.0.0.1', name='addressbook',
-                user='root', password="")
-
-def test_add_contact_into_group(app, check_ui):
-    if not app.contact.get_contact_list_from_group('[none]'):
+def test_add_contact_into_group(app, db, check_ui):
+    if not app.contact.get_contact_list_from_group():
         list(map(lambda contact: app.contact.create(contact), contact_testdata))
     if not app.group.get_group_list():
         list(map(lambda group: app.group.create(group), group_testdata))
-    contacts = app.contact.get_contact_list_from_group('[none]')
+    contacts = app.contact.get_contact_list_from_group()
     groups = app.group.get_group_list()
     contact_for_add = random.choice(contacts)
     group_for_add = random.choice(groups)
