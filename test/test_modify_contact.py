@@ -5,7 +5,7 @@ from model.contact import Contact
 
 
 def test_modify_some_contact(app, db, check_ui):
-    if not db.get_contact_list() == 0:
+    if not db.get_contact_list():
         app.contact.create(Contact(first_name='newFirstname',
                                    last_name='newLastname',
                                    address='newAddress',
