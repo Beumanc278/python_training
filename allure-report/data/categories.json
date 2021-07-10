@@ -1,0 +1,26 @@
+{
+  "uid" : "4b4757e66a1912dae1a509f688f20b0f",
+  "name" : "categories",
+  "children" : [ {
+    "name" : "Product defects",
+    "children" : [ {
+      "name" : "AssertionError: assert [442:name2:he...erbkW=>3, ...] == [442:name2:he...erbkW=>3, ...]\n  Left contains one more item: None:::footerj{I_ Zfm8f'\n  Use -v to get the full diff",
+      "children" : [ {
+        "name" : "test_add_group[None:::footerj{I_ Zfm8f']",
+        "uid" : "dfcdcd5faeb5b3a4",
+        "parentUid" : "d0cccfb057919ce183dfa26602acc437",
+        "status" : "failed",
+        "time" : {
+          "start" : 1625766778881,
+          "stop" : 1625766779351,
+          "duration" : 470
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ "None:::footerj{I_ Zfm8f'" ]
+      } ],
+      "uid" : "d0cccfb057919ce183dfa26602acc437"
+    } ],
+    "uid" : "8fb3a91ba5aaf9de24cc8a92edc82b5d"
+  } ]
+}
